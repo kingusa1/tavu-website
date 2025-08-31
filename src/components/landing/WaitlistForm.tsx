@@ -337,7 +337,7 @@ export default function WaitlistForm() {
         const publicKey = 'ChMo0khtrBlMBc2q1';
 
         if (!formRef.current) {
-            console.error("EmailJS environment variables are not set or form ref is not available.");
+            console.error("EmailJS form ref is not available.");
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
@@ -514,3 +514,5 @@ export default function WaitlistForm() {
     </>
   )
 }
+
+    
