@@ -1,11 +1,3 @@
-# TAVÚ Studio - Waitlist Landing Page
-
-This is the official repository for the TAVÚ Studio waitlist landing page. TAVÚ is a wellness studio opening soon in Al Raha, Abu Dhabi, offering a unique blend of Reformer Pilates, Breathwork, and Contrast Therapy.
-
-**Live Site:** [https://www.tavustudio.com](https://www.tavustudio.com)
-
----
-
 ## About This Project
 
 This project is a statically exported Next.js application that serves as a beautiful and responsive landing page for users to learn about TAVÚ and join the waitlist for the studio's opening.
