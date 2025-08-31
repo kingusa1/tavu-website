@@ -1,81 +1,36 @@
-## About This Project
+# TAVÚ Studio — A Sanctuary for Presence
 
-This project is a statically exported Next.js application that serves as a beautiful and responsive landing page for users to learn about TAVÚ and join the waitlist for the studio's opening.
-
-### Features
-
--   **Responsive Design:** Fully responsive layout that looks great on all devices, from mobile phones to desktops.
--   **Waitlist Form:** A functional waitlist form integrated with EmailJS to capture user interest.
--   **Static Site Generation:** Optimized for performance and easy deployment on static hosting platforms like GitHub Pages.
--   **Modern UI:** Built with modern design principles using ShadCN UI and Tailwind CSS.
+**Live Site:** [https://www.tavustudio.com](https://www.tavustudio.com)
 
 ---
 
-## Tech Stack
+## Enter the Stillness
 
--   **Framework:** [Next.js](https://nextjs.org/)
--   **Language:** [TypeScript](https://www.typescriptlang.org/)
--   **UI Components:** [ShadCN UI](https://ui.shadcn.com/)
--   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
--   **Form Handling:** [EmailJS](https://www.emailjs.com/)
--   **Icons:** [Lucide React](https://lucide.dev/)
+Welcome to the digital home of TAVÚ Studio, a sanctuary where stillness becomes movement and movement becomes ritual. Rooted in TA (grounding) and VÚ (flow), our practice is a single, curated method designed to soothe the nervous system, restore clarity, and invite you to return to yourself.
 
----
+We are opening soon in Al Raha, Abu Dhabi, offering a unique blend of:
 
-## Getting Started
+-   **Reformer Pilates**
+-   **Breathwork**
+-   **Contrast Therapy**
 
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+Our space favors quiet luxury, intentional design, and small, intimate classes. We believe in living in your TAVÚ: step onto the mat, breathe, and find what has always been there — your presence.
 
-### Prerequisites
+## Join Our Journey
 
-You need to have [Node.js](https://nodejs.org/) (v18 or later) and npm installed on your machine.
+Be the first to know about our opening, receive founders’ perks, and get early access to bookings by joining our waitlist.
 
-### Installation & Setup
+➡️ **[Join the Waitlist at tavustudio.com](https://www.tavustudio.com/#waitlist)**
 
-1.  **Clone the repository:**
-    ```sh
-    git clone https://github.com/your-username/tavu-website.git
-    cd tavu-website
-    ```
+Follow our progress and become part of our community on social media:
 
-2.  **Install dependencies:**
-    ```sh
-    npm install
-    ```
-
-3.  **Set up EmailJS credentials:**
-    The waitlist form relies on EmailJS. The deployed version has the necessary public keys hardcoded for static deployment. For local testing, you can continue to use the hardcoded keys found in `src/components/landing/WaitlistForm.tsx`.
-
-### Running the Development Server
-
-To run the app in development mode, use the following command. This will start a local server, typically on `http://localhost:3000`.
-
-```sh
-npm run dev
-```
+-   **Instagram:** [@tavuwellness](https://www.instagram.com/tavuwellness/)
+-   **TikTok:** [@tavuwellness](https://www.tiktok.com/@tavuwellness)
 
 ---
 
-## Building and Exporting for Production
+### Notice of Ownership
 
-To create a production-ready version of the site, you can build and export it as static files.
+© 2024 TAVÚ Studio. All rights reserved.
 
-1.  **Build the application:**
-    ```sh
-    npm run build
-    ```
-    This command builds the Next.js application and automatically exports it to the `out/` directory, as configured by `output: 'export'` in `next.config.ts`.
-
-2.  **Serve the static files locally (optional):**
-    If you want to test the exported static files before deploying, you can use a simple local server.
-    ```sh
-    npx serve out
-    ```
-
----
-
-## Deployment
-
-This repository is configured for deployment to **GitHub Pages**. The `next.config.ts` file is set up with `assetPrefix: './'` to ensure all static assets (CSS, JS, images) are referenced with relative paths, which is necessary for this type of deployment.
-
-Any push to the `main` branch will trigger a GitHub Action to automatically build and deploy the site.
+The code, design, branding, and all other assets in this repository are the proprietary property of TAVÚ Studio. They are showcased here for portfolio and informational purposes only. You may not copy, modify, distribute, or use any part of this project for personal or commercial purposes without explicit written permission from TAVÚ Studio.
