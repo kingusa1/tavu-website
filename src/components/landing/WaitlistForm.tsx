@@ -284,14 +284,14 @@ const countryCodes = [
 ].map(item => ({...item, id: `${item.label}-${item.value}`, fullLabel: `${item.label} (${item.value})`}));
 
 const waitlistFormSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  countryCode: z.string(),
-  phone: z.string().min(5, { message: "Please enter a valid phone number." }),
-  source: z.string({ required_error: "Please let us know how you found us."}),
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }).describe("The user's full name."),
+  email: z.string().email({ message: "Please enter a valid email address." }).describe("The user's email address."),
+  countryCode: z.string().describe("The user's phone country code."),
+  phone: z.string().min(5, { message: "Please enter a valid phone number." }).describe("The user's phone number."),
+  source: z.string({ required_error: "Please let us know how you found us."}).describe("How the user heard about TAVU."),
   consent: z.boolean().refine((value) => value === true, {
     message: "You must agree to receive TAVÚ emails and updates.",
-  }),
+  }).describe("Whether the user consented to receive emails."),
 })
 
 type WaitlistFormValues = z.infer<typeof waitlistFormSchema>
@@ -299,6 +299,7 @@ type WaitlistFormValues = z.infer<typeof waitlistFormSchema>
 export default function WaitlistForm() {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const formRef = React.useRef<HTMLFormElement>(null);
 
   const form = useForm<WaitlistFormValues>({
     resolver: zodResolver(waitlistFormSchema),
@@ -312,51 +313,61 @@ export default function WaitlistForm() {
     },
   })
 
-  function onSubmit(data: WaitlistFormValues) {
-    setIsSubmitting(true);
-
-    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
-    if (!serviceId || !templateId || !publicKey) {
-        console.error("EmailJS environment variables are not set.");
-        toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "Could not send the form. Please contact us directly.",
-        });
-        setIsSubmitting(false);
-        return;
-    }
+  // We need a separate handler for the form submission
+  // that doesn't rely on react-hook-form's `data` object,
+  // because emailjs.sendForm works directly with the form element.
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     
-    const templateParams = {
-        name: data.name,
-        email: data.email,
-        phone: `${data.countryCode} ${data.phone}`,
-        source: data.source,
-    };
+    // First, trigger validation from react-hook-form
+    form.trigger().then((isValid) => {
+        if (!isValid) {
+            toast({
+                variant: "destructive",
+                title: "Please check the form.",
+                description: "There are some errors in your submission.",
+            });
+            return;
+        }
 
-    emailjs.send(serviceId, templateId, templateParams, publicKey)
-      .then((response) => {
-        console.log('SUCCESS!', response.status, response.text);
-        toast({
-          title: "You're on the list!",
-          description: "Thank you for joining the TAVÚ waitlist. We'll be in touch soon.",
-        });
-        form.reset();
-      })
-      .catch((err) => {
-        console.error('FAILED...', err);
-        toast({
-            variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "There was a problem submitting your request. Please try again.",
-        });
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+        // If valid, proceed with EmailJS
+        setIsSubmitting(true);
+        const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+        const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+        const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+        if (!serviceId || !templateId || !publicKey || !formRef.current) {
+            console.error("EmailJS environment variables are not set or form ref is not available.");
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "Could not send the form. Please contact us directly.",
+            });
+            setIsSubmitting(false);
+            return;
+        }
+
+        emailjs.sendForm(serviceId, templateId, formRef.current, publicKey)
+          .then((response) => {
+            console.log('SUCCESS!', response.status, response.text);
+            toast({
+              title: "You're on the list!",
+              description: "Thank you for joining the TAVÚ waitlist. We'll be in touch soon.",
+            });
+            form.reset();
+          })
+          .catch((err) => {
+            console.error('FAILED...', err);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem submitting your request. Please try again.",
+            });
+          })
+          .finally(() => {
+            setIsSubmitting(false);
+          });
+    });
   }
 
   return (
@@ -370,8 +381,8 @@ export default function WaitlistForm() {
         </CardHeader>
         <CardContent className="p-8">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <form ref={formRef} onSubmit={handleFormSubmit} className="space-y-6">
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="name"
@@ -392,7 +403,7 @@ export default function WaitlistForm() {
                     <FormItem>
                       <FormLabel className="font-headline text-base text-primary">Email Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="your@email.com" {...field} className="py-6 text-lg font-body bg-secondary/80 border-border/50 focus:bg-white"/>
+                        <Input type="email" placeholder="your@email.com" {...field} className="py-6 text-lg font-body bg-secondary/80 border-border/50 focus:bg-white"/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -408,6 +419,8 @@ export default function WaitlistForm() {
                       name="countryCode"
                       render={({ field }) => (
                           <FormItem className="w-2/3">
+                               {/* This hidden input is for emailjs to grab the value */}
+                              <input type="hidden" name="countryCode" value={field.value} />
                               <Combobox
                                   items={countryCodes}
                                   value={field.value}
@@ -442,7 +455,7 @@ export default function WaitlistForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-headline text-base text-primary">How did you hear about us?</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} name={field.name}>
                       <FormControl>
                         <SelectTrigger className="py-6 text-lg font-body bg-secondary/80 border-border/50 focus:bg-white">
                           <SelectValue placeholder="Select an option" />
@@ -469,6 +482,7 @@ export default function WaitlistForm() {
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           className="h-5 w-5 mt-1"
+                          name={field.name}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -500,3 +514,5 @@ export default function WaitlistForm() {
     </>
   )
 }
+
+    
