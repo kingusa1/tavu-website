@@ -332,11 +332,11 @@ export default function WaitlistForm() {
 
         // If valid, proceed with EmailJS
         setIsSubmitting(true);
-        const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-        const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-        const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+        const serviceId = 'service_of1hcns';
+        const templateId = 'template_3995qur';
+        const publicKey = 'ChMo0khtrBlMBc2q1';
 
-        if (!serviceId || !templateId || !publicKey || !formRef.current) {
+        if (!formRef.current) {
             console.error("EmailJS environment variables are not set or form ref is not available.");
             toast({
                 variant: "destructive",
@@ -514,5 +514,3 @@ export default function WaitlistForm() {
     </>
   )
 }
-
-    
