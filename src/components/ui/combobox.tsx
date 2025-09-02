@@ -41,6 +41,15 @@ export function Combobox({
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false)
 
+  const getDisplayValue = () => {
+    if (!value) return placeholder;
+    const selectedItem = items.find(item => item.value === value);
+    if (!selectedItem) return placeholder;
+    // Extract flag from the label
+    const flag = selectedItem.label.split(" ")[0];
+    return `${flag} ${selectedItem.value}`;
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -50,9 +59,7 @@ export function Combobox({
           aria-expanded={open}
           className={cn("w-full justify-between", triggerClassName)}
         >
-          {value
-            ? items.find((item) => item.value === value)?.fullLabel
-            : placeholder}
+          {getDisplayValue()}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
